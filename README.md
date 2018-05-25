@@ -42,6 +42,7 @@ USAGE
 
 OPTIONS
   -a, --fieldaccess=fieldaccess                   Field access : all, or updateable
+  -f, --outputformat=outputformat                 Output format of the results (empty, csv)
   -q, --query=query                               Query to execute (select * from Account)
   -u, --targetusername=targetusername             username or alias for the target org; overrides default target org
   --apiversion=apiversion                         override the api version used for api requests made by this command
@@ -49,13 +50,12 @@ OPTIONS
   --loglevel=(trace|debug|info|warn|error|fatal)  logging level for this command invocation
 
 EXAMPLES
-  $ sfdx selectAll:fields --targetusername myOrg@example.com --sobjecttype XXXX
-     Hello world! This is org: MyOrg and I will be around until Tue Mar 20 2018!
-     My hub org id is: 00Dxx000000001234
+  $ sfdx gilgou:soql --targetusername myOrg@example.com --query "select * from Account"
+     select Id,IsDeleted,MasterRecordId,Name,Type,RecordTypeId,ParentId... from Account
   
 
-  $ sfdx hello:org --name myname --targetusername myOrg@example.com
-     Hello myname! This is org: MyOrg and I will be around until Tue Mar 20 2018!
+  $ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "select * from Account"
+     select Name,Type,RecordTypeId,ParentId... from Account
 ```
 
 _See code: [src/commands/gilgou/soql.ts](https://github.com/gilgourevitch/sfdx-extended-soql/blob/v0.0.1/src/commands/gilgou/soql.ts)_

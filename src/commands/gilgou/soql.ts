@@ -25,7 +25,8 @@ export default class Org extends SfdxCommand {
   protected static flagsConfig = {
     // flag with a value (-o, --sobjecttype=VALUE)
     query: flags.string({char: 'q', description: messages.getMessage('queryFlagDescription')}),
-    fieldaccess: flags.string({char: 'a', description: messages.getMessage('fieldAccessFlagDescription')})
+    fieldaccess: flags.string({char: 'a', description: messages.getMessage('fieldAccessFlagDescription')}),
+    outputformat: flags.string({char: 'f', description: messages.getMessage('outputFormatFlagDescription')})
   };
 
   // Comment this out if your command does not require an org username
@@ -40,6 +41,8 @@ export default class Org extends SfdxCommand {
   public async run(): Promise<any> { // tslint:disable-line:no-any
     const query = this.flags.query || '';
     const fieldAccess = this.flags.fieldaccess || 'all';
+    const format = this.flags.outputformat || '';
+
     const conn = this.org.getConnection();
 
     var queryPattern = /from ([a-zA-Z0-9_]*)/i
@@ -61,11 +64,75 @@ export default class Org extends SfdxCommand {
       outputQuery = query.replace('*', fields);
     }
     
-    this.ux.log(outputQuery);
+    // this.ux.log(outputQuery);
 
-    return { "query": outputQuery };
+    var soqlResults = await conn.query(outputQuery).then(function(result){
+      return result;
+    });
+
+    this.printResults(soqlResults, format);
+    
+    return { 
+      "query": outputQuery,
+      "results": soqlResults
+    };
   }
   
+  /**
+   * printResults
+   */
+  public printResults(results, format) {
+    var separator = '';
+    var lineStart = '';
+    var lineEnd = '';
+    switch(format){
+      case 'csv': 
+        separator = '","';
+        lineStart = '"';
+        lineEnd = '"';
+        break;
+      default: 
+        separator = ' | ';
+        lineStart = '| ';
+        lineEnd = ' |';
+        break;
+    }
+
+    lineEnd += '\n';
+
+    var outputStr = '';
+    var resultFieldList = this.getFieldListFromResult(results['records'][0]);
+    outputStr = lineStart + resultFieldList.join(separator) + lineEnd;
+    
+    for(var i = 0; i < results['records'].length; i++){
+      var row = '';
+  
+      for(var j = 0; j < resultFieldList.length; j++){
+        if(row != ''){
+          row += separator;
+        }
+        row += results['records'][i][resultFieldList[j]];
+      }
+  
+      outputStr += lineStart + row + lineEnd;
+    }
+    
+    this.ux.log(outputStr);
+  }
+
+  /**
+   * getFieldListFromResult
+   */
+  public getFieldListFromResult(soqlResult) {
+    var fieldList = [];
+    for(var key in soqlResult){
+      if(key != 'attributes'){
+        fieldList.push(key);
+      }
+    }
+
+    return fieldList;
+  }
   /**
    * getFields : retrieve all fields of sObjectType object
    * sObjectType : object to retrieve fields from
