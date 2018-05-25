@@ -70,7 +70,11 @@ export default class Org extends SfdxCommand {
       return result;
     });
 
-    this.printResults(soqlResults, format);
+    if(format == 'tree'){
+      this.exportResults(soqlResults["records"]);
+    }else{
+      this.printResults(soqlResults, format);
+    }
     
     return { 
       "query": outputQuery,
@@ -78,6 +82,33 @@ export default class Org extends SfdxCommand {
     };
   }
   
+  /**
+   * exportResults
+   */
+  public exportResults(results) {
+    var output = {
+      "records" : []
+    };
+
+    for(var i = 0; i < results.length; i++){
+      var row:any = {};
+      row.attributes = {
+        "type": results[i].attributes.type,
+        "referenceId": results[i].attributes.type+"Ref"+(i+1)
+      }
+
+      for(var key in results[i]){
+        if(key != 'attributes'){
+          row[key] = results[i][key];
+        }
+      }
+
+      output.records.push(row);
+    }
+
+    this.ux.log(JSON.stringify(output));
+  }
+
   /**
    * printResults
    */
