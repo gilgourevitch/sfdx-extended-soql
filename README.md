@@ -30,27 +30,26 @@ USAGE
 ```
 <!-- usagestop -->
 <!-- commands -->
-* [`sfdx-extended-soql hello:org [FILE]`](#sfdx-extended-soql-helloorg-file)
+* [`sfdx-extended-soql gilgou:soql`](#sfdx-extended-soql-gilgousoql)
 
-## `sfdx-extended-soql hello:org [FILE]`
+## `sfdx-extended-soql gilgou:soql`
 
-Prints a greeting and your org id(s)!
+Generates a SOQL query with all explicit fieldnames instead of '*'
 
 ```
 USAGE
-  $ sfdx-extended-soql hello:org [FILE]
+  $ sfdx-extended-soql gilgou:soql
 
 OPTIONS
-  -f, --force                                      example boolean flag
-  -n, --name=name                                  name to print
-  -u, --targetusername=targetusername              username or alias for the target org; overrides default target org
-  -v, --targetdevhubusername=targetdevhubusername  username or alias for the dev hub org; overrides default dev hub org
-  --apiversion=apiversion                          override the api version used for api requests made by this command
-  --json                                           format output as json
-  --loglevel=(trace|debug|info|warn|error|fatal)   logging level for this command invocation
+  -a, --fieldaccess=fieldaccess                   Field access : all, or updateable
+  -q, --query=query                               Query to execute (select * from Account)
+  -u, --targetusername=targetusername             username or alias for the target org; overrides default target org
+  --apiversion=apiversion                         override the api version used for api requests made by this command
+  --json                                          format output as json
+  --loglevel=(trace|debug|info|warn|error|fatal)  logging level for this command invocation
 
 EXAMPLES
-  $ sfdx hello:org --targetusername myOrg@example.com --targetdevhubusername devhub@org.com
+  $ sfdx selectAll:fields --targetusername myOrg@example.com --sobjecttype XXXX
      Hello world! This is org: MyOrg and I will be around until Tue Mar 20 2018!
      My hub org id is: 00Dxx000000001234
   
@@ -59,7 +58,7 @@ EXAMPLES
      Hello myname! This is org: MyOrg and I will be around until Tue Mar 20 2018!
 ```
 
-_See code: [src/commands/hello/org.ts](https://github.com/gilgourevitch/sfdx-extended-soql/blob/v0.0.1/src/commands/hello/org.ts)_
+_See code: [src/commands/gilgou/soql.ts](https://github.com/gilgourevitch/sfdx-extended-soql/blob/v0.0.1/src/commands/gilgou/soql.ts)_
 <!-- commandsstop -->
 <!-- debugging-your-plugin -->
 # Debugging your plugin
