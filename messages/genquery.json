@@ -1,7 +1,6 @@
 {
-  "commandDescription": "Executes a SOQL query with all explicit fieldnames instead of '*'",
+  "commandDescription": "Generates a SOQL query with all explicit fieldnames instead of '*'",
   "fieldAccessFlagDescription": "Field access : all, or updateable",
-  "outputFormatFlagDescription": "Output format of the results (empty, csv, tree)",
   "queryFlagDescription": "Query to execute (select * from Account)",
   "errorMalformedQuery": "Malformed query '%s'."
 }

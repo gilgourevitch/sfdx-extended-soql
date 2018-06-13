@@ -14,12 +14,30 @@ export default class Org extends SfdxCommand {
   public static description = messages.getMessage('commandDescription');
 
   public static examples = [
-  `$ sfdx gilgou:soql --targetusername myOrg@example.com --query "select * from Account"
-  select Id,IsDeleted,MasterRecordId,Name,Type,RecordTypeId,ParentId... from Account
+  `$ sfdx gilgou:soql --targetusername myOrg@example.com --query "Select * From Account"
+  | Id | IsDeleted | MasterRecordId | Name | Type | RecordTypeId | ...
+  | 001i00000093gBiAAI | false | null | GenePoint5 | Customer - Channel | null | ...
+  ...
   `,
-  `$ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "select * from Account"
-  select Name,Type,RecordTypeId,ParentId... from Account
+  `$ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account"
+  | Name | Type | RecordTypeId | ParentId | BillingStreet | ...
+  | GenePoint5 | Customer - Channel | null | null | 345 Shoreline Park
+Mountain View, CA 94043
+USA | ...
+  ...
+  `,
+  `$ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account" --format csv
+  "Name","Type","RecordTypeId","ParentId","BillingStreet" ...
+  "GenePoint5","Customer - Channel","null","null","345 Shoreline Park
+Mountain View, CA 94043
+USA", ...
+  ...
+  `,
+  `$ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account" --format tree
+  {"records":[{"attributes":{"type":"Account","referenceId":"AccountRef1"},"Name":"GenePoint5","Type":"Customer - Channel","RecordTypeId":null,"ParentId":null,"BillingStreet":"345 Shoreline Park\nMountain View, CA 94043\nUSA", ... }]}
+  ...
   `
+  
   ];
 
   protected static flagsConfig = {

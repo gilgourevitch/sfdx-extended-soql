@@ -30,19 +30,19 @@ USAGE
 ```
 <!-- usagestop -->
 <!-- commands -->
+* [`sfdx-extended-soql gilgou:genquery`](#sfdx-extended-soql-gilgougenquery)
 * [`sfdx-extended-soql gilgou:soql`](#sfdx-extended-soql-gilgousoql)
 
-## `sfdx-extended-soql gilgou:soql`
+## `sfdx-extended-soql gilgou:genquery`
 
 Generates a SOQL query with all explicit fieldnames instead of '*'
 
 ```
 USAGE
-  $ sfdx-extended-soql gilgou:soql
+  $ sfdx-extended-soql gilgou:genquery
 
 OPTIONS
   -a, --fieldaccess=fieldaccess                   Field access : all, or updateable
-  -f, --outputformat=outputformat                 Output format of the results (empty, csv)
   -q, --query=query                               Query to execute (select * from Account)
   -u, --targetusername=targetusername             username or alias for the target org; overrides default target org
   --apiversion=apiversion                         override the api version used for api requests made by this command
@@ -50,12 +50,63 @@ OPTIONS
   --loglevel=(trace|debug|info|warn|error|fatal)  logging level for this command invocation
 
 EXAMPLES
-  $ sfdx gilgou:soql --targetusername myOrg@example.com --query "select * from Account"
-     select Id,IsDeleted,MasterRecordId,Name,Type,RecordTypeId,ParentId... from Account
+  $ sfdx gilgou:genquery --targetusername myOrg@example.com --query "Select * From Account"
+     Select Id,IsDeleted,MasterRecordId,Name,Type, ... From Account
+
+  $ sfdx gilgou:genquery --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account"
+     Select Name,Type,RecordTypeId,ParentId, ... From Account
+```
+
+_See code: [src/commands/gilgou/genquery.ts](https://github.com/gilgourevitch/sfdx-extended-soql/blob/v0.0.1/src/commands/gilgou/genquery.ts)_
+
+## `sfdx-extended-soql gilgou:soql`
+
+Executes a SOQL query with all explicit fieldnames instead of '*'
+
+```
+USAGE
+  $ sfdx-extended-soql gilgou:soql
+
+OPTIONS
+  -a, --fieldaccess=fieldaccess                   Field access : all, or updateable
+  -f, --outputformat=outputformat                 Output format of the results (empty, csv, tree)
+  -q, --query=query                               Query to execute (select * from Account)
+  -u, --targetusername=targetusername             username or alias for the target org; overrides default target org
+  --apiversion=apiversion                         override the api version used for api requests made by this command
+  --json                                          format output as json
+  --loglevel=(trace|debug|info|warn|error|fatal)  logging level for this command invocation
+
+EXAMPLES
+  $ sfdx gilgou:soql --targetusername myOrg@example.com --query "Select * From Account"
+     | Id | IsDeleted | MasterRecordId | Name | Type | RecordTypeId | ...
+     | 001i00000093gBiAAI | false | null | GenePoint5 | Customer - Channel | null | ...
+     ...
   
 
-  $ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "select * from Account"
-     select Name,Type,RecordTypeId,ParentId... from Account
+  $ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account"
+     | Name | Type | RecordTypeId | ParentId | BillingStreet | ...
+     | GenePoint5 | Customer - Channel | null | null | 345 Shoreline Park
+  Mountain View, CA 94043
+  USA | ...
+     ...
+  
+
+  $ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account" 
+  --format csv
+     "Name","Type","RecordTypeId","ParentId","BillingStreet" ...
+     "GenePoint5","Customer - Channel","null","null","345 Shoreline Park
+  Mountain View, CA 94043
+  USA", ...
+     ...
+  
+
+  $ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account" 
+  --format tree
+     {"records":[{"attributes":{"type":"Account","referenceId":"AccountRef1"},"Name":"GenePoint5","Type":"Customer - 
+  Channel","RecordTypeId":null,"ParentId":null,"BillingStreet":"345 Shoreline Park
+  Mountain View, CA 94043
+  USA", ... }]}
+     ...
 ```
 
 _See code: [src/commands/gilgou/soql.ts](https://github.com/gilgourevitch/sfdx-extended-soql/blob/v0.0.1/src/commands/gilgou/soql.ts)_
