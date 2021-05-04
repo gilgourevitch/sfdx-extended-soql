@@ -135,7 +135,10 @@ USA", ...
     var separator = '';
     var lineStart = '';
     var lineEnd = '';
+    var nullValue = 'null';
     switch(format){
+      case 'bulkcsv':
+        nullValue = '#N/A';
       case 'csv':
         separator = '","';
         lineStart = '"';
@@ -161,7 +164,12 @@ USA", ...
         if(row != ''){
           row += separator;
         }
-        row += results['records'][i][resultFieldList[j]];
+
+        let value = results['records'][i][resultFieldList[j]];
+        if(value)
+          row += value;
+        else
+          row += nullValue;
       }
 
       outputStr += lineStart + row + lineEnd;
