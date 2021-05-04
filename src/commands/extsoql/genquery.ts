@@ -87,20 +87,27 @@ export default class Genquery extends SfdxCommand {
    * fieldAccess : fields access to retrieve :
    *                - all : retrieve all fields
    *                - updateable : retrieve only fields that the current user can update
+   *                - creatable : retrieve only fields that the current user can create
+   *                You can send multiple
    */
   public async getFields(sObjectType, fieldAccess): Promise<any>{
     const conn = this.org.getConnection();
+    const fieldAccesses = fieldAccess.split(',');
 
     const fieldList = await conn.describe(sObjectType).then(function(result){
 
       var fieldList = [];
       for(var i = 0; i < result.fields.length; i++){
-        if(
-          (fieldAccess == 'all') ||
-          (
-            (fieldAccess == 'updateable' ) && (result.fields[i]['updateable'])
-          )
-        ){
+        let includeField = false;
+        if(fieldAccess == 'all') includeField = true;
+        else{
+          includeField = true;
+          fieldAccesses.forEach(fieldAccess => {
+            includeField = includeField && result.fields[i][fieldAccess];
+          });
+        }
+
+        if(includeField){
           fieldList.push(result.fields[i]['name']);
         }
       }
