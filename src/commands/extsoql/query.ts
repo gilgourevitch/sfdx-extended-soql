@@ -14,26 +14,26 @@ export default class Query extends SfdxCommand {
   public static description = messages.getMessage('commandDescription');
 
   public static examples = [
-  `$ sfdx extsoql:query --targetusername myOrg@example.com --query "Select * From Account"
+    `$ sfdx extsoql:query --targetusername myOrg@example.com --query "Select * From Account"
   | Id | IsDeleted | MasterRecordId | Name | Type | RecordTypeId | ...
   | 001i00000093gBiAAI | false | null | GenePoint5 | Customer - Channel | null | ...
   ...
   `,
-  `$ sfdx extsoql:query --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account"
+    `$ sfdx extsoql:query --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account"
   | Name | Type | RecordTypeId | ParentId | BillingStreet | ...
   | GenePoint5 | Customer - Channel | null | null | 345 Shoreline Park
 Mountain View, CA 94043
 USA | ...
   ...
   `,
-  `$ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account" --format csv
+    `$ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account" --format csv
   "Name","Type","RecordTypeId","ParentId","BillingStreet" ...
   "GenePoint5","Customer - Channel","null","null","345 Shoreline Park
 Mountain View, CA 94043
 USA", ...
   ...
   `,
-  `$ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account" --format tree
+    `$ sfdx gilgou:soql --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account" --format tree
   {"records":[{"attributes":{"type":"Account","referenceId":"AccountRef1"},"Name":"GenePoint5","Type":"Customer - Channel","RecordTypeId":null,"ParentId":null,"BillingStreet":"345 Shoreline Park\nMountain View, CA 94043\nUSA", ... }]}
   ...
   `
@@ -42,9 +42,9 @@ USA", ...
 
   protected static flagsConfig = {
     // flag with a value (-o, --sobjecttype=VALUE)
-    query: flags.string({char: 'q', description: messages.getMessage('queryFlagDescription')}),
-    fieldaccess: flags.string({char: 'a', description: messages.getMessage('fieldAccessFlagDescription')}),
-    outputformat: flags.string({char: 'f', description: messages.getMessage('outputFormatFlagDescription')})
+    query: flags.string({ char: 'q', description: messages.getMessage('queryFlagDescription') }),
+    fieldaccess: flags.string({ char: 'a', description: messages.getMessage('fieldAccessFlagDescription') }),
+    outputformat: flags.string({ char: 'f', description: messages.getMessage('outputFormatFlagDescription') })
   };
 
   // Comment this out if your command does not require an org username
@@ -67,15 +67,15 @@ USA", ...
     var outputQuery = query;
 
     var matches = query.match(queryPattern);
-    if(
+    if (
       (matches == undefined)
       || (matches.length < 2)
-    ){
+    ) {
       throw new SfdxError(messages.getMessage('errorMalformedQuery', [query]));
     }
 
-    if(query.indexOf('*') > -1){
-      var fields = await this.getFields(matches[1], fieldAccess).then(function (result){
+    if (query.indexOf('*') > -1) {
+      var fields = await this.getFields(matches[1], fieldAccess).then(function (result) {
         return result;
       });
 
@@ -84,13 +84,13 @@ USA", ...
 
     // this.ux.log(outputQuery);
 
-    var soqlResults = await conn.query(outputQuery).then(function(result){
+    var soqlResults = await conn.query(outputQuery).then(function (result) {
       return result;
     });
 
-    if(format == 'tree'){
+    if (format == 'tree') {
       this.exportResults(soqlResults["records"]);
-    }else{
+    } else {
       this.printResults(soqlResults, format);
     }
 
@@ -106,18 +106,18 @@ USA", ...
    */
   public exportResults(results) {
     var output = {
-      "records" : []
+      "records": []
     };
 
-    for(var i = 0; i < results.length; i++){
-      var row:any = {};
+    for (var i = 0; i < results.length; i++) {
+      var row: any = {};
       row.attributes = {
         "type": results[i].attributes.type,
-        "referenceId": results[i].attributes.type+"Ref"+(i+1)
+        "referenceId": results[i].attributes.type + "Ref" + (i + 1)
       }
 
-      for(var key in results[i]){
-        if(key != 'attributes'){
+      for (var key in results[i]) {
+        if (key != 'attributes') {
           row[key] = results[i][key];
         }
       }
@@ -135,8 +135,8 @@ USA", ...
     var separator = '';
     var lineStart = '';
     var lineEnd = '';
-    var nullValue = 'null';
-    switch(format){
+    var nullValue = '';
+    switch (format) {
       case 'bulkcsv':
         nullValue = '#N/A';
       case 'csv':
@@ -157,16 +157,16 @@ USA", ...
     var resultFieldList = this.getFieldListFromResult(results['records'][0]);
     outputStr = lineStart + resultFieldList.join(separator) + lineEnd;
 
-    for(var i = 0; i < results['records'].length; i++){
+    for (var i = 0; i < results['records'].length; i++) {
       var row = '';
 
-      for(var j = 0; j < resultFieldList.length; j++){
-        if(row != ''){
+      for (var j = 0; j < resultFieldList.length; j++) {
+        if (row != '') {
           row += separator;
         }
 
         let value = results['records'][i][resultFieldList[j]];
-        if(value)
+        if (value)
           row += value;
         else
           row += nullValue;
@@ -183,8 +183,8 @@ USA", ...
    */
   public getFieldListFromResult(soqlResult) {
     var fieldList = [];
-    for(var key in soqlResult){
-      if(key != 'attributes'){
+    for (var key in soqlResult) {
+      if (key != 'attributes') {
         fieldList.push(key);
       }
     }
@@ -200,24 +200,24 @@ USA", ...
    *                - creatable : retrieve only fields that the current user can create
    *                You can send multiple
    */
-  public async getFields(sObjectType, fieldAccess): Promise<any>{
+  public async getFields(sObjectType, fieldAccess): Promise<any> {
     const conn = this.org.getConnection();
     const fieldAccesses = fieldAccess.split(',');
 
-    const fieldList = await conn.describe(sObjectType).then(function(result){
+    const fieldList = await conn.describe(sObjectType).then(function (result) {
 
       var fieldList = [];
-      for(var i = 0; i < result.fields.length; i++){
+      for (var i = 0; i < result.fields.length; i++) {
         let includeField = false;
-        if(fieldAccess == 'all') includeField = true;
-        else{
+        if (fieldAccess == 'all') includeField = true;
+        else {
           includeField = true;
           fieldAccesses.forEach(fieldAccess => {
             includeField = includeField && result.fields[i][fieldAccess];
           });
         }
 
-        if(includeField){
+        if (includeField) {
           fieldList.push(result.fields[i]['name']);
         }
       }
@@ -226,14 +226,14 @@ USA", ...
     return Promise.resolve(fieldList);
   }
 
-	public writeFile(filename, content){
-		var fs = require("fs");
-		fs.writeFile(filename, content, (err) => {
-			if (err) {
-				console.error(err);
-				return;
-			};
-			console.log("File has been created");
-		});
-	}
+  public writeFile(filename, content) {
+    var fs = require("fs");
+    fs.writeFile(filename, content, (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      };
+      console.log("File has been created");
+    });
+  }
 }
