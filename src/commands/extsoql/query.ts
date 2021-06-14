@@ -166,7 +166,7 @@ USA", ...
         }
 
         let value = results['records'][i][resultFieldList[j]];
-        if (value)
+        if (value || (typeof value == 'number') || (typeof value == 'boolean'))
           row += value;
         else
           row += nullValue;
