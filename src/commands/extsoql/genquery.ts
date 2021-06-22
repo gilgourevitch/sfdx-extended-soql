@@ -16,7 +16,7 @@ export default class Genquery extends SfdxCommand {
   public static examples = [
   `$ sfdx extsoql:genquery --targetusername myOrg@example.com --query "Select * From Account"
   Select Id,IsDeleted,MasterRecordId,Name,Type, ... From Account`,
-
+  ``,
   `$ sfdx extsoql:genquery --targetusername myOrg@example.com --fieldaccess updateable --query "Select * From Account"
   Select Name,Type,RecordTypeId,ParentId, ... From Account`
   ];

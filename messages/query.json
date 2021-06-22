@@ -1,6 +1,6 @@
 {
   "commandDescription": "Executes a SOQL query with all explicit fieldnames instead of '*'",
-  "fieldAccessFlagDescription": "Field access : all, or updateable",
+  "fieldAccessFlagDescription": "Field access : all, creatable, or updateable. Supports multiple values separated by comma.",
   "outputFormatFlagDescription": "Output format of the results : empty, csv, bulkcsv (same as csv, with #N/A as null values), tree",
   "queryFlagDescription": "Query to execute (select * from Account)",
   "errorMalformedQuery": "Malformed query '%s'."
