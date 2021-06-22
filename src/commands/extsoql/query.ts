@@ -209,7 +209,11 @@ USA", ...
         else {
           includeField = true;
           fieldAccesses.forEach(fieldAccess => {
-            includeField = includeField && result.fields[i][fieldAccess];
+            if(result.fields[i][fieldAccess] == undefined){
+              console.error('Unknown field access level : '+fieldAccess);
+            }else{
+              includeField = includeField && result.fields[i][fieldAccess];
+            }
           });
         }
 
