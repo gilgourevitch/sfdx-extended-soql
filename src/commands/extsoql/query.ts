@@ -163,7 +163,7 @@ USA", ...
 
         let value = results['records'][i][resultFieldList[j]];
         if (value || (typeof value == 'number') || (typeof value == 'boolean'))
-          row += value;
+          row += value.replace('"', '""');
         else
           row += nullValue;
       }
